@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../models/assignment.dart';
 import '../providers/assignment_provider.dart';
 import 'add_assignment_screen.dart';
+import '../services/notification_service.dart';
 
 class DetailScreen extends StatelessWidget {
   final Assignment assignment;
@@ -164,9 +165,13 @@ class DetailScreen extends StatelessWidget {
                   return Expanded(
                     child: GestureDetector(
                       onTap: () async {
-                        await context.read<AssignmentProvider>().update(
-                              assignment.copyWith(status: s),
-                            );
+                        final updated = assignment.copyWith(status: s);
+                        await context.read<AssignmentProvider>().update(updated);
+                        if (s == 'Completed') {
+                          await NotificationService.instance.cancelForAssignment(assignment.id);
+                        } else {
+                          await NotificationService.instance.scheduleForAssignment(updated);
+                        }
                         if (context.mounted) Navigator.pop(context);
                       },
                       child: Container(
