@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/assignment.dart';
+import '../services/notification_service.dart';
 
 class AssignmentProvider with ChangeNotifier {
   List<Assignment> _assignments = [];
@@ -49,6 +50,11 @@ class AssignmentProvider with ChangeNotifier {
   Future<void> add(Assignment a) async {
     _assignments.add(a);
     await _save();
+     await NotificationService.instance.scheduleForAssignment(a); 
+      await NotificationService.instance.showSavedNotification( 
+    title: a.title,
+    subject: a.subject,
+  );
     notifyListeners();
   }
 
@@ -56,12 +62,14 @@ class AssignmentProvider with ChangeNotifier {
     final i = _assignments.indexWhere((e) => e.id == a.id);
     if (i != -1) _assignments[i] = a;
     await _save();
+    await NotificationService.instance.scheduleForAssignment(a);
     notifyListeners();
   }
 
   Future<void> delete(int id) async {
     _assignments.removeWhere((e) => e.id == id);
     await _save();
+    await NotificationService.instance.cancelForAssignment(id);
     notifyListeners();
   }
 

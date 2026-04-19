@@ -79,7 +79,7 @@ class _AddAssignmentScreenState extends State<AddAssignmentScreen> {
     } else {
       await p.add(assignment);
     }
-    if (mounted) Navigator.pop(context);
+     if (mounted) Navigator.pop(context);
   }
 
   @override

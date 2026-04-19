@@ -220,7 +220,7 @@ class DetailScreen extends StatelessWidget {
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Delete Assignment'),
-        content: const Text('এই assignment টি delete করবেন?'),
+        content: const Text('Are you sure delete this assignment'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
