@@ -4,6 +4,7 @@ import '../models/assignment.dart';
 import '../providers/assignment_provider.dart';
 import 'add_assignment_screen.dart';
 import 'detail_screen.dart';
+import 'statistics_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AssignmentProvider>();
     final scheme = Theme.of(context).colorScheme;
-    final filters = ['All', 'Pending', 'In Progress', 'Completed', 'High Priority'];
+    final filters = [
+      'All',
+      'Pending',
+      'In Progress',
+      'Completed',
+      'High Priority'
+    ];
 
     return Scaffold(
       body: Column(
@@ -34,14 +41,31 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Assignment Manager',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
-                    IconButton(
-                      onPressed: () => p.toggleDarkMode(),
-                      icon: Icon(p.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                          color: Colors.white),
-                    ),
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
+                    Row(children: [
+                      // Statistics button — নতুন
+                      IconButton(
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const StatisticsScreen())),
+                        icon: const Icon(Icons.bar_chart, color: Colors.white),
+                        tooltip: 'Statistics',
+                      ),
+                      // Dark mode button — আগে থেকে আছে
+                      IconButton(
+                        onPressed: () => p.toggleDarkMode(),
+                        icon: Icon(
+                            p.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                            color: Colors.white),
+                      ),
+                    ]),
                   ],
                 ),
+
                 const SizedBox(height: 12),
                 // Stats row
                 Row(
@@ -55,8 +79,10 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 // Progress bar
                 if (p.totalCount > 0) ...[
-                  Text('${((p.completedCount / p.totalCount) * 100).round()}% completed',
-                      style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  Text(
+                      '${((p.completedCount / p.totalCount) * 100).round()}% completed',
+                      style:
+                          const TextStyle(fontSize: 12, color: Colors.white70)),
                   const SizedBox(height: 4),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
@@ -79,7 +105,8 @@ class HomeScreen extends StatelessWidget {
                     prefixIcon: const Icon(Icons.search, color: Colors.white54),
                     filled: true,
                     fillColor: Colors.white12,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -105,17 +132,22 @@ class HomeScreen extends StatelessWidget {
                   onTap: () => p.setFilter(f),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                     decoration: BoxDecoration(
                       color: active ? scheme.primary : Colors.transparent,
                       border: Border.all(
-                          color: active ? scheme.primary : scheme.outline.withOpacity(0.4)),
+                          color: active
+                              ? scheme.primary
+                              : scheme.outline.withOpacity(0.4)),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(f,
                         style: TextStyle(
                             fontSize: 12,
-                            color: active ? Colors.white : scheme.onSurface.withOpacity(0.6))),
+                            color: active
+                                ? Colors.white
+                                : scheme.onSurface.withOpacity(0.6))),
                   ),
                 );
               },
@@ -129,11 +161,12 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.assignment_outlined, size: 64,
-                            color: scheme.onSurface.withOpacity(0.2)),
+                        Icon(Icons.assignment_outlined,
+                            size: 64, color: scheme.onSurface.withOpacity(0.2)),
                         const SizedBox(height: 12),
                         Text('No assignments found',
-                            style: TextStyle(color: scheme.onSurface.withOpacity(0.4))),
+                            style: TextStyle(
+                                color: scheme.onSurface.withOpacity(0.4))),
                       ],
                     ),
                   )
@@ -147,8 +180,8 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const AddAssignmentScreen())),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const AddAssignmentScreen())),
         backgroundColor: scheme.primary,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
@@ -175,8 +208,12 @@ class _Stat extends StatelessWidget {
         ),
         child: Column(children: [
           Text('$value',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
-          Text(label, style: const TextStyle(fontSize: 10, color: Colors.white70)),
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white)),
+          Text(label,
+              style: const TextStyle(fontSize: 10, color: Colors.white70)),
         ]),
       ),
     );
@@ -195,45 +232,59 @@ class _AssignmentCard extends StatelessWidget {
 
     Color priorityColor() {
       switch (a.priority) {
-        case 'High': return Colors.red.shade100;
-        case 'Medium': return Colors.orange.shade100;
-        default: return Colors.green.shade100;
+        case 'High':
+          return Colors.red.shade100;
+        case 'Medium':
+          return Colors.orange.shade100;
+        default:
+          return Colors.green.shade100;
       }
     }
 
     Color priorityText() {
       switch (a.priority) {
-        case 'High': return Colors.red.shade700;
-        case 'Medium': return Colors.orange.shade800;
-        default: return Colors.green.shade700;
+        case 'High':
+          return Colors.red.shade700;
+        case 'Medium':
+          return Colors.orange.shade800;
+        default:
+          return Colors.green.shade700;
       }
     }
 
     Color statusColor() {
       switch (a.status) {
-        case 'Pending': return const Color(0xFFEEEDFE);
-        case 'In Progress': return const Color(0xFFE6F1FB);
-        default: return const Color(0xFFEAF3DE);
+        case 'Pending':
+          return const Color(0xFFEEEDFE);
+        case 'In Progress':
+          return const Color(0xFFE6F1FB);
+        default:
+          return const Color(0xFFEAF3DE);
       }
     }
 
     Color statusText() {
       switch (a.status) {
-        case 'Pending': return const Color(0xFF3C3489);
-        case 'In Progress': return const Color(0xFF0C447C);
-        default: return const Color(0xFF27500A);
+        case 'Pending':
+          return const Color(0xFF3C3489);
+        case 'In Progress':
+          return const Color(0xFF0C447C);
+        default:
+          return const Color(0xFF27500A);
       }
     }
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => DetailScreen(assignment: a))),
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => DetailScreen(assignment: a))),
       child: Container(
         decoration: BoxDecoration(
           color: scheme.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isUrgent ? Colors.red.shade300 : scheme.outline.withOpacity(0.15),
+            color: isUrgent
+                ? Colors.red.shade300
+                : scheme.outline.withOpacity(0.15),
             width: isUrgent ? 1.5 : 0.5,
           ),
           boxShadow: [
@@ -250,13 +301,16 @@ class _AssignmentCard extends StatelessWidget {
             if (isUrgent)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(14)),
                 ),
                 child: Row(children: [
-                  Icon(Icons.warning_amber_rounded, size: 14, color: Colors.red.shade600),
+                  Icon(Icons.warning_amber_rounded,
+                      size: 14, color: Colors.red.shade600),
                   const SizedBox(width: 4),
                   Text(
                     daysLeft < 0
@@ -264,7 +318,10 @@ class _AssignmentCard extends StatelessWidget {
                         : daysLeft == 0
                             ? 'Due today!'
                             : 'Due tomorrow!',
-                    style: TextStyle(fontSize: 12, color: Colors.red.shade700, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.red.shade700,
+                        fontWeight: FontWeight.w500),
                   ),
                 ]),
               ),
@@ -277,32 +334,43 @@ class _AssignmentCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(a.title,
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
-                            color: priorityColor(), borderRadius: BorderRadius.circular(8)),
+                            color: priorityColor(),
+                            borderRadius: BorderRadius.circular(8)),
                         child: Text(a.priority,
-                            style: TextStyle(fontSize: 11, color: priorityText(), fontWeight: FontWeight.w500)),
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: priorityText(),
+                                fontWeight: FontWeight.w500)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(a.subject,
-                      style: TextStyle(fontSize: 13, color: scheme.onSurface.withOpacity(0.55))),
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: scheme.onSurface.withOpacity(0.55))),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                            color: statusColor(), borderRadius: BorderRadius.circular(8)),
+                            color: statusColor(),
+                            borderRadius: BorderRadius.circular(8)),
                         child: Text(a.status,
-                            style: TextStyle(fontSize: 11, color: statusText())),
+                            style:
+                                TextStyle(fontSize: 11, color: statusText())),
                       ),
                       Row(children: [
                         Icon(Icons.calendar_today_outlined,
@@ -310,7 +378,9 @@ class _AssignmentCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${a.deadline.day}/${a.deadline.month}/${a.deadline.year}',
-                          style: TextStyle(fontSize: 12, color: scheme.onSurface.withOpacity(0.4)),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: scheme.onSurface.withOpacity(0.4)),
                         ),
                       ]),
                     ],
