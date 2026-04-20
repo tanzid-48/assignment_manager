@@ -6,7 +6,11 @@ import '../providers/assignment_provider.dart';
 
 class AddAssignmentScreen extends StatefulWidget {
   final Assignment? assignment;
-  const AddAssignmentScreen({super.key, this.assignment});
+    final bool fromNav;
+  const AddAssignmentScreen({
+    super.key, this.assignment,
+     this.fromNav = false,
+      });
 
   @override
   State<AddAssignmentScreen> createState() => _AddAssignmentScreenState();
@@ -91,6 +95,7 @@ class _AddAssignmentScreenState extends State<AddAssignmentScreen> {
         title: Text(_isEditing ? 'Edit Assignment' : 'New Assignment'),
         backgroundColor: scheme.primary,
         foregroundColor: Colors.white,
+       automaticallyImplyLeading: !widget.fromNav,
         elevation: 0,
       ),
       body: Form(

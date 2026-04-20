@@ -5,7 +5,11 @@ import '../providers/assignment_provider.dart';
 import '../models/assignment.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({super.key});
+   final bool fromNav;
+  const StatisticsScreen({
+    super.key,
+      this.fromNav = false,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +22,7 @@ class StatisticsScreen extends StatelessWidget {
         title: const Text('Statistics'),
         backgroundColor: scheme.primary,
         foregroundColor: Colors.white,
+          automaticallyImplyLeading: !fromNav,
         elevation: 0,
       ),
       body: assignments.isEmpty
