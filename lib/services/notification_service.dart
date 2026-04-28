@@ -27,14 +27,14 @@ class NotificationService {
     );
 
     await _plugin
-        .resolvePlatformSpecificImplementation
-           < AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
     _initialized = true;
   }
 
-  // ✅ Assignment save হলে instant notification
+
   Future<void> showSavedNotification({
     required String title,
     required String subject,
@@ -62,7 +62,7 @@ class NotificationService {
     );
   }
 
-  // ✅ 3টা scheduled reminder
+
   Future<void> scheduleForAssignment(Assignment assignment) async {
     await init();
     await cancelForAssignment(assignment.id);
@@ -70,13 +70,34 @@ class NotificationService {
     final now = DateTime.now();
     final deadline = assignment.deadline;
 
-    // 1. ৩ দিন আগে — সকাল ৯টায়
+
     final threeDaysBefore = DateTime(
       deadline.year,
       deadline.month,
-      deadline.day - 3,
-      9, 0, 0,
+      deadline.day,
+      9,
+      0,
+      0,
+    ).subtract(const Duration(days: 3));
+
+    final dayBefore = DateTime(
+      deadline.year,
+      deadline.month,
+      deadline.day,
+      21,
+      0,
+      0,
+    ).subtract(const Duration(days: 1));
+
+    final dueDay = DateTime(
+      deadline.year,
+      deadline.month,
+      deadline.day,
+      8,
+      0,
+      0,
     );
+
     if (threeDaysBefore.isAfter(now)) {
       await _scheduleNotification(
         id: assignment.id * 10 + 2,
@@ -87,13 +108,7 @@ class NotificationService {
       );
     }
 
-    // 2. ১ দিন আগে — রাত ৯টায়
-    final dayBefore = DateTime(
-      deadline.year,
-      deadline.month,
-      deadline.day - 1,
-      21, 0, 0,
-    );
+  
     if (dayBefore.isAfter(now)) {
       await _scheduleNotification(
         id: assignment.id * 10,
@@ -104,13 +119,7 @@ class NotificationService {
       );
     }
 
-    // 3. Due date এ — সকাল ৮টায়
-    final dueDay = DateTime(
-      deadline.year,
-      deadline.month,
-      deadline.day,
-      8, 0, 0,
-    );
+    // Due day notification
     if (dueDay.isAfter(now)) {
       await _scheduleNotification(
         id: assignment.id * 10 + 1,
@@ -156,11 +165,11 @@ class NotificationService {
     );
   }
 
-  // assignment delete হলে সব notification cancel
+
   Future<void> cancelForAssignment(int assignmentId) async {
     await _plugin.cancel(assignmentId * 10);
     await _plugin.cancel(assignmentId * 10 + 1);
-    await _plugin.cancel(assignmentId * 10 + 2); // ✅ 3 days reminder ও cancel
+    await _plugin.cancel(assignmentId * 10 + 2);
   }
 
   Future<void> cancelAll() async {

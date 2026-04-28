@@ -12,10 +12,7 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+} class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = const [
     _HomeTab(),
@@ -27,9 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final p = context.watch<AssignmentProvider>();
+    final currentIndex = p.currentTab;
+
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
@@ -57,32 +57,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   activeIcon: Icons.home_rounded,
                   label: 'Home',
                   index: 0,
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
+                  currentIndex: currentIndex,
+                  onTap: (i) => p.setCurrentTab(i),
                 ),
                 _NavItem(
                   icon: Icons.add_circle_outline,
                   activeIcon: Icons.add_circle_rounded,
                   label: 'Add',
                   index: 1,
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
+                  currentIndex: currentIndex,
+                  onTap: (i) => p.setCurrentTab(i),
                 ),
                 _NavItem(
                   icon: Icons.bar_chart_outlined,
                   activeIcon: Icons.bar_chart_rounded,
                   label: 'Stats',
                   index: 2,
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
+                  currentIndex: currentIndex,
+                  onTap: (i) => p.setCurrentTab(i),
                 ),
                 _NavItem(
                   icon: Icons.settings_outlined,
                   activeIcon: Icons.settings_rounded,
                   label: 'Settings',
                   index: 3,
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
+                  currentIndex: currentIndex,
+                  onTap: (i) => p.setCurrentTab(i),
                 ),
               ],
             ),
@@ -129,7 +129,8 @@ class _NavItem extends StatelessWidget {
           children: [
             Icon(
               active ? activeIcon : icon,
-              color: active ? scheme.primary : scheme.onSurface.withOpacity(0.4),
+              color:
+                  active ? scheme.primary : scheme.onSurface.withOpacity(0.4),
               size: 24,
             ),
             const SizedBox(height: 3),
@@ -138,9 +139,8 @@ class _NavItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: active ? FontWeight.w600 : FontWeight.normal,
-                color: active
-                    ? scheme.primary
-                    : scheme.onSurface.withOpacity(0.4),
+                color:
+                    active ? scheme.primary : scheme.onSurface.withOpacity(0.4),
               ),
             ),
           ],
@@ -158,7 +158,13 @@ class _HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AssignmentProvider>();
     final scheme = Theme.of(context).colorScheme;
-    final filters = ['All', 'Pending', 'In Progress', 'Completed', 'High Priority'];
+    final filters = [
+      'All',
+      'Pending',
+      'In Progress',
+      'Completed',
+      'High Priority'
+    ];
 
     return Column(
       children: [
@@ -205,16 +211,15 @@ class _HomeTab extends StatelessWidget {
               if (p.totalCount > 0) ...[
                 Text(
                     '${((p.completedCount / p.totalCount) * 100).round()}% completed',
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.white70)),
+                    style:
+                        const TextStyle(fontSize: 12, color: Colors.white70)),
                 const SizedBox(height: 4),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: p.completedCount / p.totalCount,
                     backgroundColor: Colors.white24,
-                    valueColor:
-                        const AlwaysStoppedAnimation(Colors.white),
+                    valueColor: const AlwaysStoppedAnimation(Colors.white),
                     minHeight: 6,
                   ),
                 ),
@@ -225,14 +230,12 @@ class _HomeTab extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Search assignments...',
-                  hintStyle:
-                      const TextStyle(color: Colors.white54),
-                  prefixIcon: const Icon(Icons.search,
-                      color: Colors.white54),
+                  hintStyle: const TextStyle(color: Colors.white54),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white54),
                   filled: true,
                   fillColor: Colors.white12,
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 0, horizontal: 16),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -248,11 +251,9 @@ class _HomeTab extends StatelessWidget {
           height: 48,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(
-                horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             itemCount: filters.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(width: 6),
+            separatorBuilder: (_, __) => const SizedBox(width: 6),
             itemBuilder: (_, i) {
               final f = filters[i];
               final active = f == p.filterStatus;
@@ -260,17 +261,14 @@ class _HomeTab extends StatelessWidget {
                 onTap: () => p.setFilter(f),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                   decoration: BoxDecoration(
-                    color: active
-                        ? scheme.primary
-                        : Colors.transparent,
+                    color: active ? scheme.primary : Colors.transparent,
                     border: Border.all(
                         color: active
                             ? scheme.primary
-                            : scheme.outline
-                                .withOpacity(0.4)),
+                            : scheme.outline.withOpacity(0.4)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(f,
@@ -278,8 +276,7 @@ class _HomeTab extends StatelessWidget {
                           fontSize: 12,
                           color: active
                               ? Colors.white
-                              : scheme.onSurface
-                                  .withOpacity(0.6))),
+                              : scheme.onSurface.withOpacity(0.6))),
                 ),
               );
             },
@@ -294,30 +291,25 @@ class _HomeTab extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.assignment_outlined,
-                          size: 64,
-                          color: scheme.onSurface
-                              .withOpacity(0.2)),
+                          size: 64, color: scheme.onSurface.withOpacity(0.2)),
                       const SizedBox(height: 12),
                       Text('No assignments found',
                           style: TextStyle(
-                              color: scheme.onSurface
-                                  .withOpacity(0.4))),
+                              color: scheme.onSurface.withOpacity(0.4))),
                       const SizedBox(height: 8),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            context.read<AssignmentProvider>().setCurrentTab(1),
                         child: const Text('+ Add Assignment'),
                       ),
                     ],
                   ),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                      12, 4, 12, 16),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
                   itemCount: p.filtered.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: 8),
-                  itemBuilder: (ctx, i) =>
-                      _AssignmentCard(a: p.filtered[i]),
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (ctx, i) => _AssignmentCard(a: p.filtered[i]),
                 ),
         ),
       ],
@@ -347,8 +339,7 @@ class _Stat extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: Colors.white)),
           Text(label,
-              style: const TextStyle(
-                  fontSize: 10, color: Colors.white70)),
+              style: const TextStyle(fontSize: 10, color: Colors.white70)),
         ]),
       ),
     );
@@ -362,47 +353,56 @@ class _AssignmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final daysLeft =
-        a.deadline.difference(DateTime.now()).inDays;
-    final isUrgent =
-        daysLeft <= 2 && a.status != 'Completed';
+    final daysLeft = a.deadline.difference(DateTime.now()).inDays;
+    final isUrgent = daysLeft <= 2 && a.status != 'Completed';
 
     Color priorityColor() {
       switch (a.priority) {
-        case 'High': return Colors.red.shade100;
-        case 'Medium': return Colors.orange.shade100;
-        default: return Colors.green.shade100;
+        case 'High':
+          return Colors.red.shade100;
+        case 'Medium':
+          return Colors.orange.shade100;
+        default:
+          return Colors.green.shade100;
       }
     }
 
     Color priorityText() {
       switch (a.priority) {
-        case 'High': return Colors.red.shade700;
-        case 'Medium': return Colors.orange.shade800;
-        default: return Colors.green.shade700;
+        case 'High':
+          return Colors.red.shade700;
+        case 'Medium':
+          return Colors.orange.shade800;
+        default:
+          return Colors.green.shade700;
       }
     }
 
     Color statusColor() {
       switch (a.status) {
-        case 'Pending': return const Color(0xFFEEEDFE);
-        case 'In Progress': return const Color(0xFFE6F1FB);
-        default: return const Color(0xFFEAF3DE);
+        case 'Pending':
+          return const Color(0xFFEEEDFE);
+        case 'In Progress':
+          return const Color(0xFFE6F1FB);
+        default:
+          return const Color(0xFFEAF3DE);
       }
     }
 
     Color statusText() {
       switch (a.status) {
-        case 'Pending': return const Color(0xFF3C3489);
-        case 'In Progress': return const Color(0xFF0C447C);
-        default: return const Color(0xFF27500A);
+        case 'Pending':
+          return const Color(0xFF3C3489);
+        case 'In Progress':
+          return const Color(0xFF0C447C);
+        default:
+          return const Color(0xFF27500A);
       }
     }
 
     return GestureDetector(
       onTap: () => Navigator.push(context,
-          MaterialPageRoute(
-              builder: (_) => DetailScreen(assignment: a))),
+          MaterialPageRoute(builder: (_) => DetailScreen(assignment: a))),
       child: Container(
         decoration: BoxDecoration(
           color: scheme.surface,
@@ -426,12 +426,12 @@ class _AssignmentCard extends StatelessWidget {
             if (isUrgent)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 5, horizontal: 14),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(14)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(14)),
                 ),
                 child: Row(children: [
                   Icon(Icons.warning_amber_rounded,
@@ -459,8 +459,7 @@ class _AssignmentCard extends StatelessWidget {
                     Expanded(
                       child: Text(a.title,
                           style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600),
+                              fontSize: 15, fontWeight: FontWeight.w600),
                           overflow: TextOverflow.ellipsis),
                     ),
                     const SizedBox(width: 8),
@@ -469,8 +468,7 @@ class _AssignmentCard extends StatelessWidget {
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                           color: priorityColor(),
-                          borderRadius:
-                              BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8)),
                       child: Text(a.priority,
                           style: TextStyle(
                               fontSize: 11,
@@ -482,37 +480,30 @@ class _AssignmentCard extends StatelessWidget {
                   Text(a.subject,
                       style: TextStyle(
                           fontSize: 13,
-                          color: scheme.onSurface
-                              .withOpacity(0.55))),
+                          color: scheme.onSurface.withOpacity(0.55))),
                   const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                             color: statusColor(),
-                            borderRadius:
-                                BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(8)),
                         child: Text(a.status,
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: statusText())),
+                            style:
+                                TextStyle(fontSize: 11, color: statusText())),
                       ),
                       Row(children: [
                         Icon(Icons.calendar_today_outlined,
-                            size: 12,
-                            color: scheme.onSurface
-                                .withOpacity(0.4)),
+                            size: 12, color: scheme.onSurface.withOpacity(0.4)),
                         const SizedBox(width: 4),
                         Text(
                           '${a.deadline.day}/${a.deadline.month}/${a.deadline.year}',
                           style: TextStyle(
                               fontSize: 12,
-                              color: scheme.onSurface
-                                  .withOpacity(0.4)),
+                              color: scheme.onSurface.withOpacity(0.4)),
                         ),
                       ]),
                     ],

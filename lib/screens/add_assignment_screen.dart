@@ -83,7 +83,22 @@ class _AddAssignmentScreenState extends State<AddAssignmentScreen> {
     } else {
       await p.add(assignment);
     }
-     if (mounted) Navigator.pop(context);
+    
+    if (mounted) {
+  _titleCtrl.clear();
+  _subjectCtrl.clear();
+  _descCtrl.clear();
+  setState(() {
+    _priority = 'Medium';
+    _status = 'Pending';
+    _deadline = DateTime.now().add(const Duration(days: 7));
+  });
+  if (widget.fromNav) {
+    context.read<AssignmentProvider>().setCurrentTab(0);
+  } else {
+    Navigator.pop(context);
+  }
+}
   }
 
   @override

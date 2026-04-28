@@ -9,6 +9,8 @@ class AssignmentProvider with ChangeNotifier {
   bool _isDarkMode = false;
   String _searchQuery = '';
   String _filterStatus = 'All';
+  int _currentTab = 0;
+int get currentTab => _currentTab;
 
   List<Assignment> get assignments => _assignments;
   bool get isDarkMode => _isDarkMode;
@@ -82,6 +84,10 @@ class AssignmentProvider with ChangeNotifier {
     _filterStatus = f;
     notifyListeners();
   }
+  void setCurrentTab(int tab) {
+  _currentTab = tab;
+  notifyListeners();
+}
 
   Future<void> toggleDarkMode() async {
     _isDarkMode = !_isDarkMode;
