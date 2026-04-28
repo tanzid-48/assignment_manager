@@ -1,5 +1,5 @@
 class Assignment {
-  final int id;
+  final String id;       // Firestore doc ID (String)
   final String title;
   final String subject;
   final String? description;
@@ -19,8 +19,37 @@ class Assignment {
     required this.createdAt,
   });
 
+  factory Assignment.fromMap(Map<String, dynamic> map) {
+    return Assignment(
+      id: map['id']?.toString() ?? '',
+      title: map['title'] ?? '',
+      subject: map['subject'] ?? '',
+      description: map['description'],
+      deadline: map['deadline'] is String
+          ? DateTime.parse(map['deadline'])
+          : (map['deadline'] as dynamic).toDate(),
+      priority: map['priority'] ?? 'Medium',
+      status: map['status'] ?? 'Pending',
+      createdAt: map['createdAt'] is String
+          ? DateTime.parse(map['createdAt'])
+          : (map['createdAt'] as dynamic).toDate(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'subject': subject,
+      'description': description,
+      'deadline': deadline.toIso8601String(),
+      'priority': priority,
+      'status': status,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
   Assignment copyWith({
-    int? id,
+    String? id,
     String? title,
     String? subject,
     String? description,
@@ -40,26 +69,4 @@ class Assignment {
       createdAt: createdAt ?? this.createdAt,
     );
   }
-
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'title': title,
-        'subject': subject,
-        'description': description,
-        'deadline': deadline.millisecondsSinceEpoch,
-        'priority': priority,
-        'status': status,
-        'createdAt': createdAt.millisecondsSinceEpoch,
-      };
-
-  factory Assignment.fromMap(Map<String, dynamic> map) => Assignment(
-        id: map['id'],
-        title: map['title'],
-        subject: map['subject'],
-        description: map['description'],
-        deadline: DateTime.fromMillisecondsSinceEpoch(map['deadline']),
-        priority: map['priority'],
-        status: map['status'],
-        createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      );
 }

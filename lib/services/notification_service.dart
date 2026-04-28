@@ -62,45 +62,43 @@ class NotificationService {
     );
   }
 
+ 
+  int _idFromString(String id, int suffix) {
+    return id.hashCode.abs() * 10 + suffix;
+  }
 
   Future<void> scheduleForAssignment(Assignment assignment) async {
     await init();
     await cancelForAssignment(assignment.id);
 
     final now = DateTime.now();
-    final deadline = assignment.deadline;
-
+    final deadline = assignment.
+    deadline;
 
     final threeDaysBefore = DateTime(
       deadline.year,
       deadline.month,
       deadline.day,
-      9,
-      0,
-      0,
+      9, 0, 0,
     ).subtract(const Duration(days: 3));
 
     final dayBefore = DateTime(
       deadline.year,
       deadline.month,
       deadline.day,
-      21,
-      0,
-      0,
+      21, 0, 0,
     ).subtract(const Duration(days: 1));
 
     final dueDay = DateTime(
       deadline.year,
       deadline.month,
       deadline.day,
-      8,
-      0,
-      0,
+      8, 0, 0,
     );
 
     if (threeDaysBefore.isAfter(now)) {
       await _scheduleNotification(
-        id: assignment.id * 10 + 2,
+        id: _idFromString(assignment.id, 2),
         title: '📅 3 Days Left!',
         body:
             '"${assignment.title}" (${assignment.subject}) is due in 3 days. Start working on it!',
@@ -108,10 +106,9 @@ class NotificationService {
       );
     }
 
-  
     if (dayBefore.isAfter(now)) {
       await _scheduleNotification(
-        id: assignment.id * 10,
+        id: _idFromString(assignment.id, 0),
         title: '⚠️ Deadline Tomorrow!',
         body:
             '"${assignment.title}" (${assignment.subject}) is due tomorrow. Don\'t forget to submit!',
@@ -119,10 +116,10 @@ class NotificationService {
       );
     }
 
-    // Due day notification
+
     if (dueDay.isAfter(now)) {
       await _scheduleNotification(
-        id: assignment.id * 10 + 1,
+        id: _idFromString(assignment.id, 1),
         title: '🔴 Due Today!',
         body:
             '"${assignment.title}" (${assignment.subject}) is due today. Submit before the deadline!',
@@ -166,10 +163,10 @@ class NotificationService {
   }
 
 
-  Future<void> cancelForAssignment(int assignmentId) async {
-    await _plugin.cancel(assignmentId * 10);
-    await _plugin.cancel(assignmentId * 10 + 1);
-    await _plugin.cancel(assignmentId * 10 + 2);
+  Future<void> cancelForAssignment(String assignmentId) async {
+    await _plugin.cancel(_idFromString(assignmentId, 0));
+    await _plugin.cancel(_idFromString(assignmentId, 1));
+    await _plugin.cancel(_idFromString(assignmentId, 2));
   }
 
   Future<void> cancelAll() async {
