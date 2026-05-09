@@ -85,3 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'assignment-manager-1246f.firebasestorage.app',
   );
 }
+
+
