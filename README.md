@@ -238,7 +238,7 @@ lib/
 
 Full project documentation including architecture diagrams, Firestore API reference, data models, Firebase setup guide, and implementation decisions:
 
-👉 **[📥 Download Full Documentation (DOCX)](docs/assignment_manager.pdf)**
+👉 **[📥 Download Full Documentation (PDF)](docs/assignment_manager.pdf)**
 
 ---
 
