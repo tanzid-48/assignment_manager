@@ -190,7 +190,8 @@ flutter run -d chrome
 flutter build apk --release
 ```
 
-> **Firebase setup required** — see [📄 Full Documentation](docs/assignment_manager_docs_final.docx) for step-by-step Firebase configuration guide.
+> **Firebase setup required** — see [📄 Full Documentation](docs/assignment_manager.pdf)
+ for step-by-step Firebase configuration guide.
 
 ---
 
@@ -237,7 +238,7 @@ lib/
 
 Full project documentation including architecture diagrams, Firestore API reference, data models, Firebase setup guide, and implementation decisions:
 
-👉 **[📥 Download Full Documentation (DOCX)](docs/assignment_manager_docs_final.docx)**
+👉 **[📥 Download Full Documentation (DOCX)](docs/assignment_manager.pdf)**
 
 ---
 
@@ -279,7 +280,7 @@ Full project documentation including architecture diagrams, Firestore API refere
 
 ## 📝 License
 
-MIT License — © 2026 Md. Tanzid Mondol
+MIT License — © 2026 Md.Tanzid Mondol
 
 ---
 
